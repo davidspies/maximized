@@ -30,7 +30,7 @@ fn maximized_inner(ast: &DeriveInput) -> syn::Result<TokenStream> {
             });
             let nbytess = v.variants.iter().map(|variant| sum_fields(&variant.fields));
             (
-                quote! {maximized::maximum(vec![#(#mbodies),*])},
+                quote! {::maximized::maximum(vec![#(#mbodies),*])},
                 quote! {1 + vec![#(#nbytess),*].into_iter().max().unwrap()},
             )
         }
@@ -58,12 +58,13 @@ fn fill_fields(name: TokenStream, fields: &syn::Fields) -> TokenStream {
         syn::Fields::Named(fields) => {
             let params = fields.named.iter().map(|x| {
                 let field_name = x.ident.as_ref().unwrap();
-                quote! {#field_name: Maximized::maximized()}
+                quote! {#field_name: ::maximized::Maximized::maximized()}
             });
             quote! {#name{#(#params),*}}
         }
         syn::Fields::Unnamed(fields) => {
-            let params = iter::repeat(quote! {Maximized::maximized()}).take(fields.unnamed.len());
+            let params = iter::repeat(quote! {::maximized::Maximized::maximized()})
+                .take(fields.unnamed.len());
             quote! {#name(#(#params),*)}
         }
         syn::Fields::Unit => quote! {#name},
@@ -76,7 +77,7 @@ fn sum_fields(fields: &syn::Fields) -> TokenStream {
     } else {
         let nbytess = fields.iter().map(|x| {
             let field_type = &x.ty;
-            quote! {<#field_type as Maximized>::compute_size()}
+            quote! {<#field_type as ::maximized::Maximized>::compute_size()}
         });
         quote! {#(#nbytess)+*}
     }
