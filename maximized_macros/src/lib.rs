@@ -30,8 +30,8 @@ fn maximized_inner(ast: &DeriveInput) -> syn::Result<TokenStream> {
             });
             let nbytess = v.variants.iter().map(|variant| sum_fields(&variant.fields));
             (
-                quote! {maximized::maximum([#(#mbodies),*])},
-                quote! {1 + [#(#nbytess),*].into_iter().max().unwrap()},
+                quote! {maximized::maximum(vec![#(#mbodies),*])},
+                quote! {1 + vec![#(#nbytess),*].into_iter().max().unwrap()},
             )
         }
         syn::Data::Union(_) => {
