@@ -81,7 +81,7 @@ impl<T: ?Sized> Maximized for PhantomData<T> {
 
 impl<T: Maximized, E: Maximized> Maximized for Result<T, E> {
     fn maximized() -> Self {
-        maximum([Ok(Maximized::maximized()), Err(Maximized::maximized())])
+        maximum(vec![Ok(Maximized::maximized()), Err(Maximized::maximized())])
     }
 
     fn compute_size() -> usize {
@@ -98,7 +98,7 @@ macro_rules! impl_tuple {
                 ($({let _ = PhantomData::<$name>; Maximized::maximized()},)+)
             }
             fn compute_size() -> usize {
-                IntoIterator::into_iter([$(<$name as Maximized>::compute_size(),)+]).sum()
+                vec![$(<$name as Maximized>::compute_size(),)+].into_iter().sum()
             }
         }
     };
