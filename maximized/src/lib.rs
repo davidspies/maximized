@@ -98,7 +98,7 @@ macro_rules! impl_tuple {
                 ($({let _ = PhantomData::<$name>; Maximized::maximized()},)+)
             }
             fn compute_size() -> usize {
-                [$(<$name as Maximized>::compute_size(),)+].into_iter().sum()
+                IntoIterator::into_iter([$(<$name as Maximized>::compute_size(),)+]).sum()
             }
         }
     };
